@@ -16,7 +16,7 @@ Generate a module
 `nest g co`
 Generate a controller
 
-```nest g s````
+`nest g s`
 Generate a service (nest g s)
 
 `nest g resource`
