@@ -1,6 +1,7 @@
-import { CreateCatDto } from './create-cat-dto';
-import { UpdateCatDto } from './update-cat-dto';
-
+import { CatsService } from './cats.service';
+import { CreateCatDto } from './dto/create-cat-dto';
+import { UpdateCatDto } from './dto/update-cat-dto';
+import { Cat } from './interfaces/cat.interface';
 import {
   Body,
   Controller,
@@ -30,7 +31,10 @@ import { AppService } from '../app.service';
 // @Controller({ host: 'admin.example.com' }) -> sub domain routing
 @Controller('cats')
 export class CatsController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private catsService: CatsService,
+  ) {}
 
   // Simple Get
   @Get()
@@ -165,8 +169,20 @@ export class CatsController {
   }
 
   // Create with custom Response
-  @Post()
+  @Post('custom/response')
   createCatWithCustomResponse(@Res() res: Response) {
     res.status(HttpStatus.CREATED).send();
+  }
+
+  // -- Begin using CatsService --
+
+  @Post()
+  async create(@Body() createCatDto: CreateCatDto) {
+    this.catsService.create(createCatDto);
+  }
+
+  @Get('all')
+  async findAll(): Promise<Cat[]> {
+    return this.catsService.findAllCat();
   }
 }
