@@ -31,10 +31,7 @@ import { AppService } from '../app.service';
 // @Controller({ host: 'admin.example.com' }) -> sub domain routing
 @Controller('cats')
 export class CatsController {
-  constructor(
-    private readonly appService: AppService,
-    private catsService: CatsService,
-  ) {}
+  constructor(private catsService: CatsService) {}
 
   // Simple Get
   @Get()
@@ -42,7 +39,7 @@ export class CatsController {
     Logger.log('Get Cats 🐈');
 
     try {
-      return this.appService.getCats();
+      return this.catsService.getCats();
     } catch (error) {
       Logger.error(`Prout 💩 : ${error}`);
       throw error;
@@ -55,7 +52,7 @@ export class CatsController {
     Logger.log(`Get Cat By ID (${id}) 🐈`);
     if (!id) throw new NotFoundException(`Cat with id ${id} not found`);
     try {
-      return this.appService.getCatById(id);
+      return this.catsService.getCatById(id);
     } catch (error) {
       Logger.error(`Prout 💩 : ${error}`);
       throw error;
@@ -118,13 +115,13 @@ export class CatsController {
   }
 
   // Update Cat
-  @Put(':id')
+  @Put('cat/:id')
   updateCat(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto) {
     return `Update #${id} cat`;
   }
 
   // Delete Cat
-  @Delete(':id')
+  @Delete('cat/:id')
   removeCat(@Param('id') id: string) {
     return `Delete #${id} cat`;
   }

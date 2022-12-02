@@ -14,4 +14,11 @@ export class CatsService {
   findAllCat(): Cat[] {
     return this.cats;
   }
+
+  getCats(): string {
+    return 'Hello Cats!';
+  }
+  getCatById(id): string {
+    return `Hello Cat by id ${id}!`;
+  }
 }

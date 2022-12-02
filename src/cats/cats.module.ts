@@ -1,13 +1,13 @@
 import { Global, Module } from '@nestjs/common';
-import { CatsController } from './cats.controller';
 import { CatsService } from './cats.service';
+import { CatsController } from './cats.controller';
 
 // @Global()
 @Module({
   controllers: [CatsController],
   providers: [CatsService],
-  exports: [CatsService],
+  // exports: [CatsService],
 })
 export class CatsModule {
-  constructor(private catsService: CatsService) {}
+  //constructor(private catsService: CatsService) {}
 }
