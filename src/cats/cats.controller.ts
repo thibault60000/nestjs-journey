@@ -15,6 +15,7 @@ import {
   Logger,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -108,12 +109,6 @@ export class CatsController {
     return of([{ id: 1, name: 'Cat' }]);
   }
 
-  // Create Cat
-  @Post()
-  async createCat(@Body() createCatDto: CreateCatDto) {
-    return 'This action adds a new cat';
-  }
-
   // Update Cat
   @Put('cat/:id')
   updateCat(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto) {
@@ -174,12 +169,44 @@ export class CatsController {
   // -- Begin using CatsService --
 
   @Post()
-  async create(@Body() createCatDto: CreateCatDto) {
+  async createCat(@Body() createCatDto: CreateCatDto) {
     this.catsService.create(createCatDto);
   }
 
   @Get('all')
-  async findAll(): Promise<Cat[]> {
+  async findAllCats(): Promise<Cat[]> {
     return this.catsService.findAllCat();
+  }
+
+  // -- Use Pipes --
+
+  // Control 'GET localhost:3000/abc'
+
+  // ? {
+  //     "statusCode":400,
+  //     "message":"Validation failed (numeric string is expected)",
+  //     "error":"Bad Request"
+  //   }
+  @Get('/pipe/:id')
+  async catPipebyId(@Param('id', ParseIntPipe) id: number) {
+    return this.catsService.getCatById(id);
+  }
+
+  // Control 'GET localhost:3000/abc' with Injection
+
+  // ? {
+  //    "statusCode":406,
+  //    "message":"Validation failed (numeric string is expected)",
+  //    "error":"Not Acceptable"
+  // }
+  @Get('/pipe/injection/:id')
+  async catPipeByIdInjection(
+    @Param(
+      'id',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    )
+    id: number,
+  ) {
+    return this.catsService.getCatById(id);
   }
 }

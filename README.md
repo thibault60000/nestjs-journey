@@ -73,3 +73,15 @@ $ npm run test:cov
 
 Custom exception[https://docs.nestjs.com/exception-filters#exception-filters-1]
 with `@Catch` and `@UseFilters`
+
+## Pipes
+
+- ValidationPipe
+- ParseIntPipe
+- ParseFloatPipe
+- ParseBoolPipe
+- ParseArrayPipe
+- ParseUUIDPipe
+- ParseEnumPipe
+- DefaultValuePipe
+- ParseFilePipe
