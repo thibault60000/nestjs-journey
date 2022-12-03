@@ -7,6 +7,10 @@ async function bootstrap() {
 
   // * Use global middleware with `use()`
   // app.use(logger);
+
+  // * Use global HttpException with `useGlobalFilters()`
+  // app.useGlobalFilters(new HttpExceptionFilter());
+
   await app.listen(3000);
 }
 bootstrap();

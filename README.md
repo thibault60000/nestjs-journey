@@ -70,3 +70,6 @@ $ npm run test:cov
 - ServiceUnavailableException
 - GatewayTimeoutException
 - PreconditionFailedException
+
+Custom exception[https://docs.nestjs.com/exception-filters#exception-filters-1]
+with `@Catch` and `@UseFilters`
