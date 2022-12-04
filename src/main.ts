@@ -11,6 +11,9 @@ async function bootstrap() {
   // * Use global HttpException with `useGlobalFilters()`
   // app.useGlobalFilters(new HttpExceptionFilter());
 
+  // * Use global Pipes with `useGlobalPipes()`
+  // app.useGlobalPipes(new ValidationPipe());
+
   await app.listen(3000);
 }
 bootstrap();

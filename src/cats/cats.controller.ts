@@ -21,13 +21,17 @@ import {
   Query,
   Redirect,
   Res,
+  UsePipes,
 } from '@nestjs/common';
+
+import Joi from 'joi';
 
 import { Response } from 'express';
 
 import { Observable, of } from 'rxjs';
 
-import { AppService } from '../app.service';
+import { JoiValidationPipe } from 'src/validation/validation-joi.pipe';
+import { ClassValidatorValidationPipe } from 'src/validation/validation-class.pipe';
 
 // @Controller({ host: 'admin.example.com' }) -> sub domain routing
 @Controller('cats')
@@ -207,6 +211,35 @@ export class CatsController {
     )
     id: number,
   ) {
+    return this.catsService.getCatById(id);
+  }
+
+  // Use Joi Validation Pipe
+  @Post()
+  @UsePipes(
+    new JoiValidationPipe(
+      Joi.object({
+        name: Joi.string().required(),
+        age: Joi.number().required(),
+        breed: Joi.string().required(),
+      }),
+    ),
+  )
+  async createWithJoi(@Body() createCatDto: CreateCatDto) {
+    return this.catsService.create(createCatDto);
+  }
+
+  // Use Class Validator Validation Pipe
+  @Post()
+  async createWithClassValidator(
+    @Body(new ClassValidatorValidationPipe()) createCatDto: CreateCatDto,
+  ) {
+    this.catsService.create(createCatDto);
+  }
+
+  // Use Pipe to transform String to Int
+  @Get('/parseint/:id')
+  async CatByParsingStringtoInt(@Param('id', new ParseIntPipe()) id) {
     return this.catsService.getCatById(id);
   }
 }
