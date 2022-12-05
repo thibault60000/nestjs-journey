@@ -1,3 +1,4 @@
+import { RolesGuard } from './../common/guard/role.guard';
 import { CatsService } from './cats.service';
 import { CreateCatDto } from './dto/create-cat-dto';
 import { UpdateCatDto } from './dto/update-cat-dto';
@@ -21,20 +22,23 @@ import {
   Query,
   Redirect,
   Res,
+  SetMetadata,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
-
-import Joi from 'joi';
 
 import { Response } from 'express';
 
 import { Observable, of } from 'rxjs';
 
+import { schema } from './schema/cat-schema';
 import { JoiValidationPipe } from 'src/validation/validation-joi.pipe';
 import { ClassValidatorValidationPipe } from 'src/validation/validation-class.pipe';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 // @Controller({ host: 'admin.example.com' }) -> sub domain routing
 @Controller('cats')
+@UseGuards(RolesGuard)
 export class CatsController {
   constructor(private catsService: CatsService) {}
 
@@ -214,17 +218,9 @@ export class CatsController {
     return this.catsService.getCatById(id);
   }
 
-  // Use Joi Validation Pipe
+  // Control with Pipes and Joi
   @Post()
-  @UsePipes(
-    new JoiValidationPipe(
-      Joi.object({
-        name: Joi.string().required(),
-        age: Joi.number().required(),
-        breed: Joi.string().required(),
-      }),
-    ),
-  )
+  @UsePipes(new JoiValidationPipe(schema))
   async createWithJoi(@Body() createCatDto: CreateCatDto) {
     return this.catsService.create(createCatDto);
   }
@@ -241,5 +237,13 @@ export class CatsController {
   @Get('/parseint/:id')
   async CatByParsingStringtoInt(@Param('id', new ParseIntPipe()) id) {
     return this.catsService.getCatById(id);
+  }
+
+  // Use Guard and Metadata for Roles
+  @Post()
+  @Roles('admin')
+  // @SetMetadata('roles', ['admin'])
+  async createWithRolesGuard(@Body() createCatDto: CreateCatDto) {
+    this.catsService.create(createCatDto);
   }
 }
