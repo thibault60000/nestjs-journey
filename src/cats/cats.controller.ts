@@ -1,3 +1,4 @@
+import { TransformInterceptor } from 'src/common/interceptors/transform.interceptor';
 import { RolesGuard } from './../common/guard/role.guard';
 import { CatsService } from './cats.service';
 import { CreateCatDto } from './dto/create-cat-dto';
@@ -24,6 +25,7 @@ import {
   Res,
   SetMetadata,
   UseGuards,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 
@@ -35,10 +37,12 @@ import { schema } from './schema/cat-schema';
 import { JoiValidationPipe } from 'src/validation/validation-joi.pipe';
 import { ClassValidatorValidationPipe } from 'src/validation/validation-class.pipe';
 import { Roles } from 'src/common/decorators/roles.decorator';
+import { LoggingInterceptor } from 'src/common/interceptors/logging.interceptor';
 
 // @Controller({ host: 'admin.example.com' }) -> sub domain routing
 @Controller('cats')
 @UseGuards(RolesGuard)
+@UseInterceptors(TransformInterceptor) // Or use decorator before specific method
 export class CatsController {
   constructor(private catsService: CatsService) {}
 
@@ -242,7 +246,7 @@ export class CatsController {
   // Use Guard and Metadata for Roles
   @Post()
   @Roles('admin')
-  // @SetMetadata('roles', ['admin'])
+  @SetMetadata('roles', ['admin'])
   async createWithRolesGuard(@Body() createCatDto: CreateCatDto) {
     this.catsService.create(createCatDto);
   }
